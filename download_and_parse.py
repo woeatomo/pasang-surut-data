@@ -1,4 +1,3 @@
-
 import os
 import json
 import pandas as pd
@@ -17,15 +16,15 @@ def download_nc():
     cmd = [
         "python", "-m", "motuclient",
         "--motu", "https://nrt.cmems-du.eu/motu-web/Motu",
-        "--service-id", "SERVICE_ID",
-        "--product-id", "PRODUCT_ID",
-        "--longitude-min", "104.0",
-        "--longitude-max", "105.0",
-        "--latitude-min", "0.8",
-        "--latitude-max", "1.5",
+        "--service-id", "SEALEVEL_GLO_PHY_L4_MY_008_047-TDS",  # Service ID sesuai
+        "--product-id", "dataset-duacs-rep-global-merged-allsat-phy-l4",  # Product ID sesuai
+        "--longitude-min", "103.5",  # Longitude wilayah Batam
+        "--longitude-max", "104.5",  # Longitude wilayah Batam
+        "--latitude-min", "0.8",  # Latitude wilayah Batam
+        "--latitude-max", "1.5",  # Latitude wilayah Batam
         "--date-min", "2025-04-25 00:00:00",
         "--date-max", "2025-04-26 23:59:59",
-        "--variable", "zos",
+        "--variable", "adt",  # Menggunakan variabel 'adt' untuk tinggi permukaan laut
         "--out-dir", "./data",
         "--out-name", "sea_level.nc",
         "--user", CMEMS_USERNAME,
@@ -40,14 +39,14 @@ def parse_nc_to_json():
     
     dataset = Dataset(nc_file)
     times = dataset.variables['time'][:]
-    zos = dataset.variables['zos'][:]
+    adt = dataset.variables['adt'][:]  # Mengambil variabel 'adt' yang sesuai
     times = pd.to_datetime(times, unit='h', origin=pd.Timestamp('1950-01-01'))
 
     data = []
-    for t, z in zip(times, zos):
+    for t, z in zip(times, adt):
         data.append({
             "time": t.strftime("%Y-%m-%d %H:%M:%S"),
-            "zos": float(z)
+            "adt": float(z)  # Menggunakan 'adt' untuk output
         })
 
     with open(output_json, 'w') as f:
