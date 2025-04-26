@@ -1,5 +1,6 @@
-netCDF4
+flask
 pandas
+netCDF4
 requests
 motuclient
-python-dotenv
+gunicorn
