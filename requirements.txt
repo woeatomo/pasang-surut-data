@@ -1,0 +1,5 @@
+netCDF4
+pandas
+requests
+motuclient
+python-dotenv
